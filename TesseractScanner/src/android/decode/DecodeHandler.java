@@ -1,11 +1,11 @@
 /*
  * Copyright (C) 2010 ZXing authors
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
@@ -28,7 +28,6 @@ import com.google.zxing.PlanarYUVLuminanceSource;
 import com.google.zxing.Result;
 import com.google.zxing.common.GlobalHistogramBinarizer;
 import com.google.zxing.common.HybridBinarizer;
-import com.lwtch.tesseract.R;
 import com.lwtch.tesseract.scanner.ScannerActivity;
 import com.lwtch.tesseract.scanner.tess.TessEngine;
 
@@ -37,6 +36,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Map;
+
+import com.lwtch.tesseract.scanner.TesseractScanner;
 
 final class DecodeHandler extends Handler {
 
@@ -60,11 +61,12 @@ final class DecodeHandler extends Handler {
 
     @Override
     public void handleMessage(Message message) {
+        Context context = TesseractScanner.sAppContext;
         switch (message.what) {
-        case R.id.decode:
+        case context.getResources().getIdentifier("decode", "id", context.getPackageName()):
             decode((byte[]) message.obj, message.arg1, message.arg2);
             break;
-        case R.id.quit:
+        case context.getResources().getIdentifier("quit", "id", context.getPackageName()):
             Looper looper = Looper.myLooper();
             if (null != looper) {
                 looper.quit();
@@ -135,12 +137,13 @@ final class DecodeHandler extends Handler {
         } finally {
             mMultiFormatReader.reset();
         }
+        Context context = TesseractScanner.sAppContext;
 
         if (rawResult != null) {
-            Message message = Message.obtain(mActivity.getCaptureActivityHandler(), R.id.decode_succeeded, rawResult);
+            Message message = Message.obtain(mActivity.getCaptureActivityHandler(), context.getResources().getIdentifier("decode_succeeded", "id", context.getPackageName()), rawResult);
             message.sendToTarget();
         } else {
-            Message message = Message.obtain(mActivity.getCaptureActivityHandler(), R.id.decode_failed);
+            Message message = Message.obtain(mActivity.getCaptureActivityHandler(), context.getResources().getIdentifier("decode_failed", "id", context.getPackageName()));
             message.sendToTarget();
         }
     }

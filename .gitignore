@@ -27,8 +27,8 @@ npm-debug.log*
 /dist
 /node_modules
 /platforms
-/plugins
-/resources/android
-/resources/ios
-/resources/windows
+# /plugins
+# /resources/android
+# /resources/ios
+# /resources/windows
 /www

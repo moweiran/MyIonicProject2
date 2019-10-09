@@ -3,8 +3,6 @@ package com.lwtch.tesseract.scanner.tess;
 import android.content.Context;
 import android.util.Log;
 
-import com.lwtch.tesseract.R;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -87,7 +85,8 @@ public class TessDataManager {
     private static byte[] readRawTrainingData(Context context) {
 
         try {
-            InputStream fileInputStream = context.getResources().openRawResource(R.raw.eng_traineddata);
+
+            InputStream fileInputStream = context.getResources().openRawResource(context.getResources().getIdentifier("eng_traineddata", "raw", context.getPackageName()));
 
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
 

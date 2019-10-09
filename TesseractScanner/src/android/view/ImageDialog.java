@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.lwtch.tesseract.R;
+import com.lwtch.tesseract.scanner.TesseractScanner;
 
 public class ImageDialog extends Dialog {
 
@@ -37,10 +37,11 @@ public class ImageDialog extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.image_dialog);
+        Context context = TesseractScanner.sAppContext;
+        setContentView(context.getResources().getIdentifier("image_dialog", "layout", context.getPackageName()));
 
-        ImageView imageView = (ImageView) findViewById(R.id.image_dialog_imageView);
-        TextView textView = (TextView) findViewById(R.id.image_dialog_textView);
+        ImageView imageView = (ImageView) findViewById(context.getResources().getIdentifier("image_dialog_imageView", "id", context.getPackageName()));
+        TextView textView = (TextView) findViewById(context.getResources().getIdentifier("image_dialog_textView", "id", context.getPackageName()));
 
         if (bmp != null) {
             imageView.setImageBitmap(bmp);
