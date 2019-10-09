@@ -13,6 +13,7 @@
 
 package com.lwtch.tesseract.scanner.decode;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.Handler;
@@ -41,110 +42,110 @@ import com.lwtch.tesseract.scanner.TesseractScanner;
 
 final class DecodeHandler extends Handler {
 
-    private final ScannerActivity mActivity;
-    private final MultiFormatReader mMultiFormatReader;
-    private final Map<DecodeHintType, Object> mHints;
-    private byte[] mRotatedData;
+  private final ScannerActivity mActivity;
+  private final MultiFormatReader mMultiFormatReader;
+  private final Map<DecodeHintType, Object> mHints;
+  private byte[] mRotatedData;
 
-    DecodeHandler(ScannerActivity activity) {
-        this.mActivity = activity;
-        mMultiFormatReader = new MultiFormatReader();
-        mHints = new Hashtable<>();
-        mHints.put(DecodeHintType.CHARACTER_SET, "utf-8");
-        mHints.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
-        Collection<BarcodeFormat> barcodeFormats = new ArrayList<>();
-        barcodeFormats.add(BarcodeFormat.CODE_39);
-        barcodeFormats.add(BarcodeFormat.CODE_128); // 快递单常用格式39,128
-        barcodeFormats.add(BarcodeFormat.QR_CODE); // 扫描格式自行添加
-        mHints.put(DecodeHintType.POSSIBLE_FORMATS, barcodeFormats);
+  DecodeHandler(ScannerActivity activity) {
+    this.mActivity = activity;
+    mMultiFormatReader = new MultiFormatReader();
+    mHints = new Hashtable<>();
+    mHints.put(DecodeHintType.CHARACTER_SET, "utf-8");
+    mHints.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
+    Collection<BarcodeFormat> barcodeFormats = new ArrayList<>();
+    barcodeFormats.add(BarcodeFormat.CODE_39);
+    barcodeFormats.add(BarcodeFormat.CODE_128); // 快递单常用格式39,128
+    barcodeFormats.add(BarcodeFormat.QR_CODE); // 扫描格式自行添加
+    mHints.put(DecodeHintType.POSSIBLE_FORMATS, barcodeFormats);
+  }
+
+  @Override
+  public void handleMessage(Message message) {
+    Context context = TesseractScanner.sAppContext;
+    int id_decode = context.getResources().getIdentifier("decode", "id", context.getPackageName());
+    int id_quit = context.getResources().getIdentifier("quit", "id", context.getPackageName());
+    if (message.what == id_decode) {
+      decode((byte[]) message.obj, message.arg1, message.arg2);
     }
-
-    @Override
-    public void handleMessage(Message message) {
-        Context context = TesseractScanner.sAppContext;
-        switch (message.what) {
-        case context.getResources().getIdentifier("decode", "id", context.getPackageName()):
-            decode((byte[]) message.obj, message.arg1, message.arg2);
-            break;
-        case context.getResources().getIdentifier("quit", "id", context.getPackageName()):
-            Looper looper = Looper.myLooper();
-            if (null != looper) {
-                looper.quit();
-            }
-            break;
-        }
+    if (message.what == id_quit) {
+      Looper looper = Looper.myLooper();
+      if (null != looper) {
+        looper.quit();
+      }
     }
+  }
 
-    /**
-     * Decode the data within the viewfinder rectangle, and time how long it took.
-     * For efficiency, reuse the same reader objects from one decode to the next.
-     *
-     * @param data   The YUV preview frame.
-     * @param width  The width of the preview frame.
-     * @param height The height of the preview frame.
-     */
-    private void decode(byte[] data, int width, int height) {
-        if (null == mRotatedData) {
-            mRotatedData = new byte[width * height];
-        } else {
-            if (mRotatedData.length < width * height) {
-                mRotatedData = new byte[width * height];
-            }
+  /**
+   * Decode the data within the viewfinder rectangle, and time how long it took.
+   * For efficiency, reuse the same reader objects from one decode to the next.
+   *
+   * @param data   The YUV preview frame.
+   * @param width  The width of the preview frame.
+   * @param height The height of the preview frame.
+   */
+  private void decode(byte[] data, int width, int height) {
+    if (null == mRotatedData) {
+      mRotatedData = new byte[width * height];
+    } else {
+      if (mRotatedData.length < width * height) {
+        mRotatedData = new byte[width * height];
+      }
+    }
+    Arrays.fill(mRotatedData, (byte) 0);
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        if (x + y * width >= data.length) {
+          break;
         }
-        Arrays.fill(mRotatedData, (byte) 0);
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                if (x + y * width >= data.length) {
-                    break;
-                }
-                mRotatedData[x * height + height - y - 1] = data[x + y * width];
-            }
-        }
-        int tmp = width; // Here we are swapping, that's the difference to #11
-        width = height;
-        height = tmp;
+        mRotatedData[x * height + height - y - 1] = data[x + y * width];
+      }
+    }
+    int tmp = width; // Here we are swapping, that's the difference to #11
+    width = height;
+    height = tmp;
 
-        Result rawResult = null;
-        try {
-            Rect rect = mActivity.getCropRect();
-            if (rect == null) {
-                return;
-            }
+    Result rawResult = null;
+    try {
+      Rect rect = mActivity.getCropRect();
+      if (rect == null) {
+        return;
+      }
 
-            PlanarYUVLuminanceSource source = new PlanarYUVLuminanceSource(mRotatedData, width, height, rect.left,
-                    rect.top, rect.width(), rect.height(), false);
+      PlanarYUVLuminanceSource source = new PlanarYUVLuminanceSource(mRotatedData, width, height, rect.left,
+        rect.top, rect.width(), rect.height(), false);
 
-            if (mActivity.isQRCode()) {
+      if (mActivity.isQRCode()) {
                 /*
                  * HybridBinarizer算法使用了更高级的算法，针对渐变图像更优，也就是准确率高。
                  * 但使用GlobalHistogramBinarizer识别效率确实比HybridBinarizer要高一些。
                  */
-                rawResult = mMultiFormatReader.decode(new BinaryBitmap(new GlobalHistogramBinarizer(source)), mHints);
-                if (rawResult == null) {
-                    rawResult = mMultiFormatReader.decode(new BinaryBitmap(new HybridBinarizer(source)), mHints);
-                }
-            } else {
-                TessEngine tessEngine = TessEngine.Generate();
-                Bitmap bitmap = source.renderCroppedGreyscaleBitmap();
-                String result = tessEngine.detectText(bitmap);
-                if (!TextUtils.isEmpty(result)) {
-                    rawResult = new Result(result, null, null, null);
-                    rawResult.setBitmap(bitmap);
-                }
-            }
-
-        } catch (Exception ignored) {
-        } finally {
-            mMultiFormatReader.reset();
+        rawResult = mMultiFormatReader.decode(new BinaryBitmap(new GlobalHistogramBinarizer(source)), mHints);
+        if (rawResult == null) {
+          rawResult = mMultiFormatReader.decode(new BinaryBitmap(new HybridBinarizer(source)), mHints);
         }
-        Context context = TesseractScanner.sAppContext;
-
-        if (rawResult != null) {
-            Message message = Message.obtain(mActivity.getCaptureActivityHandler(), context.getResources().getIdentifier("decode_succeeded", "id", context.getPackageName()), rawResult);
-            message.sendToTarget();
-        } else {
-            Message message = Message.obtain(mActivity.getCaptureActivityHandler(), context.getResources().getIdentifier("decode_failed", "id", context.getPackageName()));
-            message.sendToTarget();
+      } else {
+        TessEngine tessEngine = TessEngine.Generate();
+        Bitmap bitmap = source.renderCroppedGreyscaleBitmap();
+        String result = tessEngine.detectText(bitmap);
+        if (!TextUtils.isEmpty(result)) {
+          rawResult = new Result(result, null, null, null);
+          rawResult.setBitmap(bitmap);
         }
+      }
+
+    } catch (Exception ignored) {
+    } finally {
+      mMultiFormatReader.reset();
     }
+    Context context = TesseractScanner.sAppContext;
+
+    if (rawResult != null) {
+      Message message = Message.obtain(mActivity.getCaptureActivityHandler(), context.getResources().getIdentifier("decode_succeeded", "id", context.getPackageName()), rawResult);
+      message.sendToTarget();
+    } else {
+      Message message = Message.obtain(mActivity.getCaptureActivityHandler(), context.getResources().getIdentifier("decode_failed", "id", context.getPackageName()));
+      message.sendToTarget();
+    }
+  }
 }

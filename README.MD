@@ -23,4 +23,11 @@ cordova　run android
 
 
 <config-file target="AndroidManifest.xml" parent="/manifest/application">
+maven { url 'http://maven.aliyun.com/nexus/content/repositories/google' }
+maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter'}
 
+在project.properties中添加
+android.library.reference.3=zxing
+然后settings.gradle中就会多加
+include ":zxing"

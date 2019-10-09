@@ -233,11 +233,11 @@ public class ScannerActivity extends Activity implements Callback, Camera.Pictur
             });
         } else {
             Vibrator vibrator = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
-            vibrator.vibrate(200L);
+//            vibrator.vibrate(200L);
             if (switch1.isChecked()) {
                 qrSucceed(result.getText());
             } else {
-                phoneSucceed(result.getText(), result.getBitmap());
+//                phoneSucceed(result.getText(), result.getBitmap());
             }
         }
     }

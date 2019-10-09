@@ -26,7 +26,6 @@
     "@ionic/pro": "2.0.4",
     "@ionic/storage": "2.2.0",
     "com.example.sample.plugin": "./PluginName",
-    "com.lwtch.tesseract.scanner": "./TesseractScanner",
     "cordova-android": "^7.1.4",
     "cordova-plugin-device": "^2.0.2",
     "cordova-plugin-ionic-keyboard": "^2.2.0",
@@ -42,7 +41,8 @@
     "rxjs": "5.5.11",
     "sw-toolbox": "3.6.0",
     "tesseractscanner": "file:TesseractScanner",
-    "zone.js": "0.8.29"
+    "zone.js": "0.8.29",
+    "com.lwtch.tesseract.scanner": "./TesseractScanner"
   },
   "devDependencies": {
     "@ionic/app-scripts": "3.2.2",

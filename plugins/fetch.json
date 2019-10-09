@@ -68,7 +68,7 @@
   "com.lwtch.tesseract.scanner": {
     "source": {
       "type": "local",
-      "path": "D:\\lzy\\MyIonicProject2\\node_modules\\tesseractscanner"
+      "path": "D:\\Projects\\MyIonicProject2\\node_modules\\tesseractscanner"
     },
     "is_top_level": true,
     "variables": {}

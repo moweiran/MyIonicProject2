@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Tesseract-OCR-Scanner</string>
     <!--扫一扫-->
     <string name="title_activity_scan_qr_code">扫一扫</string>
     <string name="close">关闭</string>

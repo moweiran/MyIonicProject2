@@ -13,8 +13,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
 
-import com.lwtch.tesseract.R;
 import com.lwtch.tesseract.scanner.utils.ScreenUtils;
+import com.lwtch.tesseract.scanner.TesseractScanner;
 
 public final class ScannerFinderView extends RelativeLayout {
 
@@ -55,10 +55,10 @@ public final class ScannerFinderView extends RelativeLayout {
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         Resources resources = getResources();
-        mMaskColor = resources.getColor(R.color.finder_mask);
-        mFrameColor = resources.getColor(R.color.finder_frame);
-        mLaserColor = resources.getColor(R.color.finder_laser);
-        mTextColor = resources.getColor(R.color.white);
+        mMaskColor = resources.getColor(context.getResources().getIdentifier("finder_mask", "color", context.getPackageName()));
+        mFrameColor = resources.getColor(context.getResources().getIdentifier("finder_frame", "color", context.getPackageName()));
+        mLaserColor = resources.getColor(context.getResources().getIdentifier("finder_laser", "color", context.getPackageName()));
+        mTextColor = resources.getColor(context.getResources().getIdentifier("white", "color", context.getPackageName()));
 
         mFocusThick = 1;
         mAngleThick = 8;
@@ -176,10 +176,11 @@ public final class ScannerFinderView extends RelativeLayout {
     }
 
     private void drawText(Canvas canvas, Rect rect) {
+        Context context = TesseractScanner.sAppContext;
         int margin = 40;
         mPaint.setColor(mTextColor);
-        mPaint.setTextSize(getResources().getDimension(R.dimen.text_size_13sp));
-        String text = getResources().getString(R.string.auto_scan_notification);
+        mPaint.setTextSize(getResources().getDimension(context.getResources().getIdentifier("text_size_13sp", "dimen", context.getPackageName())));
+        String text = getResources().getString(context.getResources().getIdentifier("auto_scan_notification", "string", context.getPackageName()));
         Paint.FontMetrics fontMetrics = mPaint.getFontMetrics();
         float fontTotalHeight = fontMetrics.bottom - fontMetrics.top;
         float offY = fontTotalHeight / 2 - fontMetrics.bottom;

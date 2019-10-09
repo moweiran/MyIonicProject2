@@ -25,7 +25,6 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.google.zxing.Result;
-import com.lwtch.tesseract.R;
 import com.lwtch.tesseract.scanner.camera.CameraManager;
 import com.lwtch.tesseract.scanner.decode.CaptureActivityHandler;
 import com.lwtch.tesseract.scanner.decode.DecodeManager;
@@ -55,23 +54,25 @@ public class ScannerActivity extends Activity implements Callback, Camera.Pictur
 
     private ProgressDialog progressDialog;
     private Bitmap bmp;
+    private String packageName;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scanner);
+        packageName = getApplication().getPackageName();
+        setContentView(getApplication().getResources().getIdentifier("activity_scanner", "layout", packageName));
         initView();
         initData();
     }
 
     private void initView() {
-        mQrCodeFinderView = (ScannerFinderView) findViewById(R.id.qr_code_view_finder);
-        mSurfaceViewStub = (ViewStub) findViewById(R.id.qr_code_view_stub);
-        switch1 = (Switch) findViewById(R.id.switch1);
+        mQrCodeFinderView = (ScannerFinderView) findViewById(getApplication().getResources().getIdentifier("qr_code_view_finder", "id", packageName));
+        mSurfaceViewStub = (ViewStub) findViewById(getApplication().getResources().getIdentifier("qr_code_view_stub", "id", packageName));
+        switch1 = (Switch) findViewById(getApplication().getResources().getIdentifier("switch1", "id", packageName));
         mHasSurface = false;
 
-        bt = (Button) findViewById(R.id.bt);
+        bt = (Button) findViewById(getApplication().getResources().getIdentifier("bt", "id", packageName));
 
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,7 +83,7 @@ public class ScannerActivity extends Activity implements Callback, Camera.Pictur
             }
         });
 
-        Switch switch2 = (Switch) findViewById(R.id.switch2);
+        Switch switch2 = (Switch) findViewById(getApplication().getResources().getIdentifier("switch2", "id", packageName));
         switch2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -112,7 +113,7 @@ public class ScannerActivity extends Activity implements Callback, Camera.Pictur
 
     private void initCamera() {
         if (null == mSurfaceView) {
-            mSurfaceViewStub.setLayoutResource(R.layout.layout_surface_view);
+            mSurfaceViewStub.setLayoutResource(getApplication().getResources().getIdentifier("layout_surface_view", "layout", packageName));
             mSurfaceView = (SurfaceView) mSurfaceViewStub.inflate();
         }
         SurfaceHolder surfaceHolder = mSurfaceView.getHolder();
@@ -177,7 +178,7 @@ public class ScannerActivity extends Activity implements Callback, Camera.Pictur
             }
         } catch (IOException e) {
             // 基本不会出现相机不存在的情况
-            Toast.makeText(this, getString(R.string.camera_not_found), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(getApplication().getResources().getIdentifier("camera_not_found", "string", packageName)), Toast.LENGTH_SHORT).show();
             finish();
             return;
         } catch (RuntimeException re) {
@@ -185,7 +186,7 @@ public class ScannerActivity extends Activity implements Callback, Camera.Pictur
             return;
         }
         mQrCodeFinderView.setVisibility(View.VISIBLE);
-        findViewById(R.id.qr_code_view_background).setVisibility(View.GONE);
+        findViewById(getApplication().getResources().getIdentifier("qr_code_view_background", "id", packageName)).setVisibility(View.GONE);
         if (mCaptureActivityHandler == null) {
             mCaptureActivityHandler = new CaptureActivityHandler(this);
         }
@@ -232,11 +233,11 @@ public class ScannerActivity extends Activity implements Callback, Camera.Pictur
             });
         } else {
             Vibrator vibrator = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
-            vibrator.vibrate(200L);
+//            vibrator.vibrate(200L);
             if (switch1.isChecked()) {
                 qrSucceed(result.getText());
             } else {
-                phoneSucceed(result.getText(), result.getBitmap());
+//                phoneSucceed(result.getText(), result.getBitmap());
             }
         }
     }
@@ -277,8 +278,8 @@ public class ScannerActivity extends Activity implements Callback, Camera.Pictur
     }
 
     private void qrSucceed(String result) {
-        AlertDialog dialog = new AlertDialog.Builder(this).setTitle(R.string.notification).setMessage(result)
-                .setPositiveButton(R.string.positive_button_confirm, new DialogInterface.OnClickListener() {
+        AlertDialog dialog = new AlertDialog.Builder(this).setTitle(getApplication().getResources().getIdentifier("notification", "string", packageName)).setMessage(result)
+                .setPositiveButton(getApplication().getResources().getIdentifier("positive_button_confirm", "string", packageName), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
