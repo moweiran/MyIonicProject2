@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="com.lwtch.camera" version="1.0.0" 
+    xmlns="http://apache.org/cordova/ns/plugins/1.0" 
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <name>CameraAutoFocusCallBack</name>
+    <js-module name="CameraAutoFocusCallBack" src="www/CameraAutoFocusCallBack.js">
+        <clobbers target="cordova.plugins.CameraAutoFocusCallBack" />
+    </js-module>
+    <platform name="android">
+        <config-file parent="/*" target="res/xml/config.xml">
+            <feature name="CameraAutoFocusCallBack">
+                <param name="android-package" value="com.lwtch.camera.CameraAutoFocusCallBack" />
+            </feature>
+        </config-file>
+        <config-file parent="/*" target="AndroidManifest.xml">
+            <uses-permission android:name="android.permission.CAMERA" />
+            <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+        </config-file>
+        <config-file parent="/manifest/application" target="AndroidManifest.xml">
+            <activity android:name="com.lwtch.camera.CameraActivity" android:screenOrientation="portrait"></activity>
+        </config-file>
+        <source-file src="src/android/CameraAutoFocusCallBack.java" target-dir="src/com/lwtch/camera" />
+        <source-file src="src/android/CameraActivity.java" target-dir="src/com/lwtch/camera" />
+        <source-file src="src/android/camera_autofocus.xml" target-dir="res/layout" />
+    </platform>
+</plugin>

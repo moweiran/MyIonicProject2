@@ -25,7 +25,6 @@
     "@ionic-native/status-bar": "~4.20.0",
     "@ionic/pro": "2.0.4",
     "@ionic/storage": "2.2.0",
-    "com.example.sample.plugin": "./PluginName",
     "cordova-android": "^7.1.4",
     "cordova-plugin-device": "^2.0.2",
     "cordova-plugin-ionic-keyboard": "^2.2.0",
@@ -36,13 +35,10 @@
     "ionic-angular": "3.9.5",
     "ionic2-super-tabs": "^5.2.0",
     "ionicons": "3.0.0",
-    "lwtchtoast": "file:lwtchtoast",
-    "pluginname": "file:PluginName",
     "rxjs": "5.5.11",
     "sw-toolbox": "3.6.0",
-    "tesseractscanner": "file:TesseractScanner",
-    "zone.js": "0.8.29",
-    "com.lwtch.tesseract.scanner": "./TesseractScanner"
+    "tessocrscanner": "file:TessocrScanner",
+    "zone.js": "0.8.29"
   },
   "devDependencies": {
     "@ionic/app-scripts": "3.2.2",
@@ -59,8 +55,7 @@
         "ANDROID_SUPPORT_ANNOTATIONS_VERSION": "27.+"
       },
       "cordova-plugin-ionic-keyboard": {},
-      "com.example.sample.plugin": {},
-      "com.lwtch.tesseract.scanner": {}
+      "com.lwtch.tessocr.scanner": {}
     },
     "platforms": [
       "android"

@@ -12,6 +12,7 @@
  */
 
 package com.lwtch.tesseract.scanner.decode;
+
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
@@ -32,7 +33,6 @@ public final class CaptureActivityHandler extends Handler {
     private final ScannerActivity mActivity;
     private final DecodeThread mDecodeThread;
 
-
     private State mState;
 
     public CaptureActivityHandler(ScannerActivity activity) {
@@ -46,27 +46,31 @@ public final class CaptureActivityHandler extends Handler {
 
     @Override
     public void handleMessage(Message message) {
-        int id_auto_focus = TesseractScanner.sAppContext.getResources().getIdentifier("auto_focus", "id", TesseractScanner.sAppContext.getPackageName());
-        int id_decode_succeeded = TesseractScanner.sAppContext.getResources().getIdentifier("decode_succeeded", "id", TesseractScanner.sAppContext.getPackageName());
-        int id_decode_failed = TesseractScanner.sAppContext.getResources().getIdentifier("decode_failed", "id", TesseractScanner.sAppContext.getPackageName());
-        if(message.what == id_auto_focus) {
-          // Log.d(TAG, "Got auto-focus message");
-          // When one auto focus pass finishes, start another. This is the closest thing
-          // to
-          // continuous AF. It does seem to hunt a bit, but I'm not sure what else to do.
-          if (mState == State.PREVIEW) {
-            CameraManager.get().requestAutoFocus(this, id_auto_focus);
-          }
+        int id_auto_focus = TesseractScanner.sAppContext.getResources().getIdentifier("auto_focus", "id",
+                TesseractScanner.sAppContext.getPackageName());
+        int id_decode_succeeded = TesseractScanner.sAppContext.getResources().getIdentifier("decode_succeeded", "id",
+                TesseractScanner.sAppContext.getPackageName());
+        int id_decode_failed = TesseractScanner.sAppContext.getResources().getIdentifier("decode_failed", "id",
+                TesseractScanner.sAppContext.getPackageName());
+        if (message.what == id_auto_focus) {
+            // Log.d(TAG, "Got auto-focus message");
+            // When one auto focus pass finishes, start another. This is the closest thing
+            // to
+            // continuous AF. It does seem to hunt a bit, but I'm not sure what else to do.
+            if (mState == State.PREVIEW) {
+                CameraManager.get().requestAutoFocus(this, id_auto_focus);
+            }
         }
-        if(message.what == id_decode_succeeded) {
-          Log.e(TAG, "Got decode succeeded message");
-          mState = State.SUCCESS;
-          mActivity.handleDecode((Result) message.obj);
+        if (message.what == id_decode_succeeded) {
+            Log.e(TAG, "Got decode succeeded message");
+            mState = State.SUCCESS;
+            mActivity.handleDecode((Result) message.obj);
         }
-        if(message.what == id_decode_failed){
+        if (message.what == id_decode_failed) {
             // We're decoding as fast as possible, so when one decode fails, start another.
             mState = State.PREVIEW;
-            CameraManager.get().requestPreviewFrame(mDecodeThread.getHandler(), TesseractScanner.sAppContext.getResources().getIdentifier("decode", "id", TesseractScanner.sAppContext.getPackageName()));
+            CameraManager.get().requestPreviewFrame(mDecodeThread.getHandler(), TesseractScanner.sAppContext
+                    .getResources().getIdentifier("decode", "id", TesseractScanner.sAppContext.getPackageName()));
         }
     }
 
@@ -75,7 +79,8 @@ public final class CaptureActivityHandler extends Handler {
         String packageName = context.getPackageName();
         mState = State.DONE;
         CameraManager.get().stopPreview();
-        Message quit = Message.obtain(mDecodeThread.getHandler(), context.getResources().getIdentifier("quit", "id", packageName));
+        Message quit = Message.obtain(mDecodeThread.getHandler(),
+                context.getResources().getIdentifier("quit", "id", packageName));
         quit.sendToTarget();
         try {
             mDecodeThread.join();
@@ -93,8 +98,10 @@ public final class CaptureActivityHandler extends Handler {
             String packageName = context.getPackageName();
             CameraManager.get().startPreview();
             mState = State.PREVIEW;
-            CameraManager.get().requestPreviewFrame(mDecodeThread.getHandler(), context.getResources().getIdentifier("decode", "id", packageName));
-            CameraManager.get().requestAutoFocus(this, context.getResources().getIdentifier("auto_focus", "id", packageName));
+            CameraManager.get().requestPreviewFrame(mDecodeThread.getHandler(),
+                    context.getResources().getIdentifier("decode", "id", packageName));
+            CameraManager.get().requestAutoFocus(this,
+                    context.getResources().getIdentifier("auto_focus", "id", packageName));
         }
     }
 

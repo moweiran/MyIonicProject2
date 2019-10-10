@@ -7,12 +7,6 @@
     "files": {}
   },
   "installed_plugins": {
-    "com.example.sample.plugin": {
-      "PACKAGE_NAME": "io.ionic.starter"
-    },
-    "com.lwtch.tesseract.scanner": {
-      "PACKAGE_NAME": "io.ionic.starter"
-    },
     "cordova-plugin-device": {
       "PACKAGE_NAME": "io.ionic.starter"
     },
@@ -30,6 +24,9 @@
       "PACKAGE_NAME": "io.ionic.starter"
     },
     "cordova-plugin-whitelist": {
+      "PACKAGE_NAME": "io.ionic.starter"
+    },
+    "com.lwtch.tessocr.scanner": {
       "PACKAGE_NAME": "io.ionic.starter"
     }
   },
