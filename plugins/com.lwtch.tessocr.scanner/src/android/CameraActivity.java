@@ -73,8 +73,9 @@ public class CameraActivity extends Activity
         int r_id_focus_button = getApplication().getResources().getIdentifier("focus_button", "id", packageName);
 
         cameraFrame = (SurfaceView) findViewById(r_id_camera_frame);
-        shutterButton = (Button) findViewById(r_id_shutter_button);
         focusBox = (FocusBoxView) findViewById(r_id_focus_box);
+
+        shutterButton = (Button) findViewById(r_id_shutter_button);
         focusButton = (Button) findViewById(r_id_focus_button);
 
         shutterButton.setOnClickListener(this);

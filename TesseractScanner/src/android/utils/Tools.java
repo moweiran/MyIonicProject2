@@ -1,4 +1,4 @@
-package com.lwtch.tesseract.scanner.utils;
+package com.lwtch.tessocr.scanner;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -9,14 +9,16 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.hardware.Camera;
-import android.text.TextUtils;
+import android.util.Log;
 
-import com.lwtch.tesseract.scanner.camera.CameraConfigurationUtils;
+import com.lwtch.tessocr.scanner.FocusBoxUtils;
+import com.lwtch.tessocr.scanner.PlanarYUVLuminanceSource;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+/**
+ * Created by Fadi on 5/11/2014.
+ */
 public class Tools {
+    static final String TAG = "DBG_" + Tools.class.getName();
 
     public static Bitmap rotateBitmap(Bitmap source, float angle) {
         Matrix matrix = new Matrix();
@@ -30,7 +32,7 @@ public class Tools {
         return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, false);
     }
 
-    public enum ScalingLogic {
+    public static enum ScalingLogic {
         CROP, FIT
     }
 
@@ -119,22 +121,35 @@ public class Tools {
     }
 
     public static Bitmap getFocusedBitmap(Context context, Camera camera, byte[] data, Rect box) {
-        Point ScrRes = ScreenUtils.getScreenResolution(context);
-        Point CamRes = CameraConfigurationUtils.findBestPreviewSizeValue(camera.getParameters(), ScrRes);
+        Point CamRes = FocusBoxUtils.getCameraResolution(context, camera);
+        Point ScrRes = FocusBoxUtils.getScreenResolution(context);
 
         int SW = ScrRes.x;
         int SH = ScrRes.y;
+
+        Log.d(TAG, "ScrRes SW: " + SW);
+        Log.d(TAG, "ScrRes SH: " + SH);
 
         int RW = box.width();
         int RH = box.height();
         int RL = box.left;
         int RT = box.top;
 
+        Log.d(TAG, "box RW: " + RW);
+        Log.d(TAG, "box RH: " + RH);
+        Log.d(TAG, "box RL: " + RL);
+        Log.d(TAG, "box RT: " + RT);
+
         float RSW = (float) (RW * Math.pow(SW, -1));
         float RSH = (float) (RH * Math.pow(SH, -1));
 
         float RSL = (float) (RL * Math.pow(SW, -1));
         float RST = (float) (RT * Math.pow(SH, -1));
+
+        Log.d(TAG, "box RSW: " + RSW);
+        Log.d(TAG, "box RSH: " + RSH);
+        Log.d(TAG, "box RSL: " + RSL);
+        Log.d(TAG, "box RST: " + RST);
 
         float k = 0.5f;
 
@@ -144,16 +159,15 @@ public class Tools {
         int X = (int) (k * CW);
         int Y = (int) (k * CH);
 
-        Bitmap unscaledBitmap = Tools.decodeByteArray(data, X, Y, ScalingLogic.CROP);
-        Bitmap bmp = Tools.createScaledBitmap(unscaledBitmap, X, Y, ScalingLogic.CROP);
+        Bitmap unscaledBitmap = Tools.decodeByteArray(data, X, Y, Tools.ScalingLogic.CROP);
+        Bitmap bmp = Tools.createScaledBitmap(unscaledBitmap, X, Y, Tools.ScalingLogic.CROP);
         unscaledBitmap.recycle();
 
-        if (CW > CH) {
-            bmp = Tools.rotateBitmap(bmp, 90);
-        }
+        // if (CW > CH)
+        bmp = Tools.rotateBitmap(bmp, 90);
 
         int BW = bmp.getWidth();
-        int BH = bmp.getHeight();
+        int BH = bmp.getHeight() - 20;
 
         int RBL = (int) (RSL * BW);
         int RBT = (int) (RST * BH);
@@ -161,31 +175,17 @@ public class Tools {
         int RBW = (int) (RSW * BW);
         int RBH = (int) (RSH * BH);
 
+        Log.d(TAG, "bmp BW: " + BW);
+        Log.d(TAG, "bmp BH: " + BH);
+
+        Log.d(TAG, "bmp RBL: " + RBL);
+        Log.d(TAG, "bmp RBT: " + RBT);
+        Log.d(TAG, "bmp RBW: " + RBW);
+        Log.d(TAG, "bmp RBH: " + RBH);
+
         Bitmap res = Bitmap.createBitmap(bmp, RBL, RBT, RBW, RBH);
         bmp.recycle();
 
         return res;
-    }
-
-    private static Pattern pattern = Pattern.compile("(1|861)\\d{10}$*");
-
-    private static StringBuilder bf = new StringBuilder();
-
-    public static String getTelNum(String sParam) {
-        if (TextUtils.isEmpty(sParam)) {
-            return "";
-        }
-
-        Matcher matcher = pattern.matcher(sParam.trim());
-        bf.delete(0, bf.length());
-
-        while (matcher.find()) {
-            bf.append(matcher.group()).append("\n");
-        }
-        int len = bf.length();
-        if (len > 0) {
-            bf.deleteCharAt(len - 1);
-        }
-        return bf.toString();
     }
 }

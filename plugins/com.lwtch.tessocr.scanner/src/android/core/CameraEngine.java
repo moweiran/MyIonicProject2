@@ -59,31 +59,31 @@ public class CameraEngine {
         Log.d(TAG, "Got camera hardware");
 
         try {
-            Camera.Parameters params = this.camera.getParameters();
-            List<Camera.Size> sizes = params.getSupportedPictureSizes();
-            Camera.Size size = sizes.get(0);
-            for (int i = 0; i < sizes.size(); i++) {
-                if (sizes.get(i).width > size.width)
-                    size = sizes.get(i);
-            }
-            params.setPictureSize(size.width, size.height);
-            params.setPictureFormat(ImageFormat.JPEG);
-            params.setJpegQuality(100);
-            this.camera.setParameters(params);
             this.camera.setPreviewDisplay(this.surfaceHolder);
             this.camera.setDisplayOrientation(90);
+            Camera.Parameters params = this.camera.getParameters();
+            Camera.Size bestSize = CameraUtils.getBestSize(params.getSupportedPreviewSizes());
+            if (bestSize != null) {
+                params.setPreviewSize(bestSize.width, bestSize.height);
+                params.setPictureSize(bestSize.width, bestSize.height);
+            } else {
+                params.setPreviewSize(1920, 1080);
+                params.setPictureSize(1920, 1080);
+            }
+            // params.setPictureFormat(ImageFormat.JPEG);
+            // params.setJpegQuality(100);
+            params.setRotation(90);
+
+            this.camera.setParameters(params);
             this.camera.startPreview();
-
             on = true;
-
             Log.d(TAG, "CameraEngine preview started");
-
         } catch (IOException e) {
             Log.e(TAG, "Error in setPreviewDisplay");
         }
     }
 
-    public void stop() {
+    void stop() {
 
         if (camera != null) {
             // this.autoFocusEngine.stop();

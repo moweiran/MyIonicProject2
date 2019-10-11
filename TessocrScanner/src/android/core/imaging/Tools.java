@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.hardware.Camera;
+import android.util.Log;
 
 import com.lwtch.tessocr.scanner.FocusBoxUtils;
 import com.lwtch.tessocr.scanner.PlanarYUVLuminanceSource;
@@ -17,6 +18,7 @@ import com.lwtch.tessocr.scanner.PlanarYUVLuminanceSource;
  * Created by Fadi on 5/11/2014.
  */
 public class Tools {
+    static final String TAG = "DBG_" + Tools.class.getName();
 
     public static Bitmap rotateBitmap(Bitmap source, float angle) {
         Matrix matrix = new Matrix();
@@ -125,50 +127,65 @@ public class Tools {
         int SW = ScrRes.x;
         int SH = ScrRes.y;
 
+        Log.d(TAG, "ScrRes SW: " + SW);
+        Log.d(TAG, "ScrRes SH: " + SH);
+
         int RW = box.width();
         int RH = box.height();
         int RL = box.left;
         int RT = box.top;
 
-        PlanarYUVLuminanceSource source = new PlanarYUVLuminanceSource(data, RW, RH, box.left, box.top, box.width(),
-                box.height(), false);
-        Bitmap bitmap = source.renderCroppedGreyscaleBitmap();
-        return bitmap;
-        // float RSW = (float) (RW * Math.pow(SW, -1));
-        // float RSH = (float) (RH * Math.pow(SH, -1));
+        Log.d(TAG, "box RW: " + RW);
+        Log.d(TAG, "box RH: " + RH);
+        Log.d(TAG, "box RL: " + RL);
+        Log.d(TAG, "box RT: " + RT);
 
-        // float RSL = (float) (RL * Math.pow(SW, -1));
-        // float RST = (float) (RT * Math.pow(SH, -1));
+        float RSW = (float) (RW * Math.pow(SW, -1));
+        float RSH = (float) (RH * Math.pow(SH, -1));
 
-        // float k = 0.5f;
+        float RSL = (float) (RL * Math.pow(SW, -1));
+        float RST = (float) (RT * Math.pow(SH, -1));
 
-        // int CW = CamRes.x;
-        // int CH = CamRes.y;
+        Log.d(TAG, "box RSW: " + RSW);
+        Log.d(TAG, "box RSH: " + RSH);
+        Log.d(TAG, "box RSL: " + RSL);
+        Log.d(TAG, "box RST: " + RST);
 
-        // int X = (int) (k * CW);
-        // int Y = (int) (k * CH);
+        float k = 0.5f;
 
-        // Bitmap unscaledBitmap = Tools.decodeByteArray(data, X, Y,
-        // Tools.ScalingLogic.CROP);
-        // Bitmap bmp = Tools.createScaledBitmap(unscaledBitmap, X, Y,
-        // Tools.ScalingLogic.CROP);
-        // unscaledBitmap.recycle();
+        int CW = CamRes.x;
+        int CH = CamRes.y;
+
+        int X = (int) (k * CW);
+        int Y = (int) (k * CH);
+
+        Bitmap unscaledBitmap = Tools.decodeByteArray(data, X, Y, Tools.ScalingLogic.CROP);
+        Bitmap bmp = Tools.createScaledBitmap(unscaledBitmap, X, Y, Tools.ScalingLogic.CROP);
+        unscaledBitmap.recycle();
 
         // if (CW > CH)
-        // bmp = Tools.rotateBitmap(bmp, 90);
+        bmp = Tools.rotateBitmap(bmp, 90);
 
-        // int BW = bmp.getWidth();
-        // int BH = bmp.getHeight();
+        int BW = bmp.getWidth();
+        int BH = bmp.getHeight() - 20;
 
-        // int RBL = (int) (RSL * BW);
-        // int RBT = (int) (RST * BH);
+        int RBL = (int) (RSL * BW);
+        int RBT = (int) (RST * BH);
 
-        // int RBW = (int) (RSW * BW);
-        // int RBH = (int) (RSH * BH);
+        int RBW = (int) (RSW * BW);
+        int RBH = (int) (RSH * BH);
 
-        // Bitmap res = Bitmap.createBitmap(bmp, RBL, RBT, RBW, RBH);
-        // bmp.recycle();
+        Log.d(TAG, "bmp BW: " + BW);
+        Log.d(TAG, "bmp BH: " + BH);
 
-        // return res;
+        Log.d(TAG, "bmp RBL: " + RBL);
+        Log.d(TAG, "bmp RBT: " + RBT);
+        Log.d(TAG, "bmp RBW: " + RBW);
+        Log.d(TAG, "bmp RBH: " + RBH);
+
+        Bitmap res = Bitmap.createBitmap(bmp, RBL, RBT, RBW, RBH);
+        bmp.recycle();
+
+        return res;
     }
 }
