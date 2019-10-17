@@ -35,6 +35,7 @@
     "ionic-angular": "3.9.5",
     "ionic2-super-tabs": "^5.2.0",
     "ionicons": "3.0.0",
+    "pluginname": "file:PluginName",
     "rxjs": "5.5.11",
     "sw-toolbox": "3.6.0",
     "tessocrscanner": "file:TessocrScanner",
@@ -55,7 +56,7 @@
         "ANDROID_SUPPORT_ANNOTATIONS_VERSION": "27.+"
       },
       "cordova-plugin-ionic-keyboard": {},
-      "com.lwtch.tessocr.scanner": {}
+      "com.example.sample.plugin": {}
     },
     "platforms": [
       "android"

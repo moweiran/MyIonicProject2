@@ -1,4 +1,4 @@
-package com.lwtch.tesseract.scanner.view;
+package com.example.sample.plugin;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -13,8 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
 
-import com.lwtch.tesseract.scanner.utils.ScreenUtils;
-import com.lwtch.tesseract.scanner.TesseractScanner;
+import com.example.sample.plugin.ScreenUtils;
 
 public final class ScannerFinderView extends RelativeLayout {
 
@@ -84,7 +83,7 @@ public final class ScannerFinderView extends RelativeLayout {
             ScrRes = ScreenUtils.getScreenResolution(context);
 
             int width = ScrRes.x * 3 / 5;
-            int height = width;
+            int height = 100;// int height = width;
 
             width = width == 0 ? MIN_FOCUS_BOX_WIDTH : width < MIN_FOCUS_BOX_WIDTH ? MIN_FOCUS_BOX_WIDTH : width;
 
@@ -180,14 +179,10 @@ public final class ScannerFinderView extends RelativeLayout {
     }
 
     // private void drawText(Canvas canvas, Rect rect) {
-    // Context context = TesseractScanner.sAppContext;
     // int margin = 40;
     // mPaint.setColor(mTextColor);
-    // mPaint.setTextSize(getResources().getDimension(context.getResources().getIdentifier("text_size_13sp",
-    // "dimen", context.getPackageName())));
-    // String text =
-    // getResources().getString(context.getResources().getIdentifier("auto_scan_notification",
-    // "string", context.getPackageName()));
+    // mPaint.setTextSize(getResources().getDimension(R.dimen.text_size_13sp));
+    // String text = getResources().getString(R.string.auto_scan_notification);
     // Paint.FontMetrics fontMetrics = mPaint.getFontMetrics();
     // float fontTotalHeight = fontMetrics.bottom - fontMetrics.top;
     // float offY = fontTotalHeight / 2 - fontMetrics.bottom;

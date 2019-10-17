@@ -23,6 +23,7 @@ import { LocationStrategy, PathLocationStrategy } from '@angular/common';
     imports: [
         BrowserModule,
         IonicModule.forRoot(MyApp, {
+            tabsHideOnSubPages: true,
             locationStrategy: 'path'
         })
     ],

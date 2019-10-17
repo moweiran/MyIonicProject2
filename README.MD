@@ -39,5 +39,5 @@ https://blog.csdn.net/qq_17766199/article/details/77963278
 https://github.com/simplezhli/Tesseract-OCR-Scanner
 https://www.cnblogs.com/asingingfish/p/6196638.html?utm_source=itdadao&utm_medium=referral
 
-
+ionic build --prod --aot --release
 cordova build android --prod --release

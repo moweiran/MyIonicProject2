@@ -57,10 +57,10 @@
     "is_top_level": true,
     "variables": {}
   },
-  "com.lwtch.tessocr.scanner": {
+  "com.example.sample.plugin": {
     "source": {
       "type": "local",
-      "path": "D:\\lzy\\MyIonicProject2\\node_modules\\tessocrscanner"
+      "path": "D:\\lzy\\MyIonicProject2\\node_modules\\pluginname"
     },
     "is_top_level": true,
     "variables": {}

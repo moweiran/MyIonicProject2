@@ -26,7 +26,7 @@
     "cordova-plugin-whitelist": {
       "PACKAGE_NAME": "io.ionic.starter"
     },
-    "com.lwtch.tessocr.scanner": {
+    "com.example.sample.plugin": {
       "PACKAGE_NAME": "io.ionic.starter"
     }
   },
